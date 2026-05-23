@@ -7,7 +7,7 @@ package.domain = org.kimi
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json,txt,env
 version = 1.0.0
-requirements = python3,kivy,pillow,requests
+requirements = python3==3.11.9,kivy==2.3.0,pillow==10.4.0,requests
 # Android permissions
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 # Android entry point
@@ -30,8 +30,8 @@ presplash.filename = %(source.dir)s/assets/presplash.png
 log_level = 2
 # Presplash color
 presplash.color = #0F1117
-# p4a branch for building
-p4a.branch = master
+# p4a - use specific tag for stable recipe versions
+p4a.branch = 2024.07.27
 # Accept SDK licenses
 android.accept_sdk_license = True
 
