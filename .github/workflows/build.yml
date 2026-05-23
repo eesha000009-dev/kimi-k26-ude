@@ -37,7 +37,7 @@ jobs:
     - name: Install Buildozer
       run: |
         python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install buildozer cython virtualenv
+        python3 -m pip install buildozer cython==3.0.11 virtualenv
     
     - name: Build APK with Buildozer
       run: |
@@ -54,8 +54,7 @@ jobs:
       if: always()
       with:
         name: kimi-ude-apk
-        path: |
-          ./bin/*.apk
+        path: ./bin/*.apk
         retention-days: 30
     
     - name: Upload build log on failure
