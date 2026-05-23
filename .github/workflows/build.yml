@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.11.9'
     
     - name: Set up Java 17
       uses: actions/setup-java@v4
@@ -37,7 +37,7 @@ jobs:
     - name: Install Buildozer
       run: |
         python3 -m pip install --upgrade pip setuptools
-        python3 -m pip install buildozer cython==3.0.11 virtualenv
+        python3 -m pip install buildozer cython==0.29.37 virtualenv
     
     - name: Build APK with Buildozer
       run: |
@@ -45,24 +45,15 @@ jobs:
         export PATH="$JAVA_HOME/bin:$PATH"
         echo "JAVA_HOME=$JAVA_HOME"
         javac -version
-        buildozer android debug 2>&1 | tee build.log
+        buildozer android debug
       env:
         JAVA_HOME: ${{ steps.setup-java.outputs.path }}
     
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
-      if: always()
       with:
         name: kimi-ude-apk
         path: ./bin/*.apk
-        retention-days: 30
-    
-    - name: Upload build log on failure
-      uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: build-log
-        path: ./build.log
         retention-days: 30
     
     - name: Build summary
