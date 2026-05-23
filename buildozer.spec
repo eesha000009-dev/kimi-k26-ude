@@ -31,7 +31,7 @@ log_level = 2
 # Presplash color
 presplash.color = #0F1117
 # p4a - use specific tag for stable recipe versions
-p4a.branch = 2024.07.27
+p4a.branch = v2024.01.21
 # Accept SDK licenses
 android.accept_sdk_license = True
 
