@@ -33,7 +33,11 @@ log_level = 2
 presplash.color = #0F1117
 # Android gradle dependencies
 android.gradle_dependencies = 
-# Window size for desktop testing
+# p4a branch for building
+p4a.branch = master
+# Accept SDK licenses
+android.accept_sdk_license = True
+
 [buildozer]
 log_level = 2
 warn_on_root = 1

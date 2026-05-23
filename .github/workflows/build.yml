@@ -7,18 +7,39 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Build with Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
-      id: buildozer
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-pip python3-setuptools python3-venv \
+          build-essential git autoconf libtool pkg-config \
+          zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 \
+          cmake libffi-dev libssl-dev libltdl-dev \
+          openjdk-17-jdk \
+          liblzma-dev libsqlite3-dev libbz2-dev libreadline-dev
+    
+    - name: Set up Java
+      uses: actions/setup-java@v4
       with:
-        workdir: .
-        buildozer_version: stable
+        distribution: 'temurin'
+        java-version: '17'
+    
+    - name: Install Buildozer
+      run: |
+        python3 -m pip install --upgrade pip setuptools
+        python3 -m pip install buildozer cython virtualenv
+    
+    - name: Build APK
+      run: |
+        export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
+        buildozer android debug 2>&1 | tee build.log
+      env:
+        JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
     
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
@@ -27,14 +48,12 @@ jobs:
         path: ./bin/*.apk
         retention-days: 30
     
-    - name: Get APK filename
-      id: apk_info
+    - name: Build summary
+      if: always()
       run: |
         APK_FILE=$(ls ./bin/*.apk 2>/dev/null | head -1)
         if [ -n "$APK_FILE" ]; then
-          echo "apk_path=$APK_FILE" >> $GITHUB_OUTPUT
           APK_NAME=$(basename "$APK_FILE")
-          echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
           echo "### ✅ APK Built Successfully!" >> $GITHUB_STEP_SUMMARY
           echo "📱 File: \`$APK_NAME\`" >> $GITHUB_STEP_SUMMARY
           echo "📦 Download from the Artifacts section below" >> $GITHUB_STEP_SUMMARY
