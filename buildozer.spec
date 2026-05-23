@@ -7,7 +7,7 @@ package.domain = org.kimi
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json,txt,env
 version = 1.0.0
-requirements = python3==3.11.9,kivy==2.3.0,pillow,requests
+requirements = python3,kivy==2.3.0,pillow,requests
 # Android permissions
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 # Android entry point
