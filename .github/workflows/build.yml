@@ -1,0 +1,44 @@
+name: Build Kimi K2.6 UDE APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Build with Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
+      id: buildozer
+      with:
+        workdir: .
+        buildozer_version: stable
+    
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: kimi-ude-apk
+        path: ./bin/*.apk
+        retention-days: 30
+    
+    - name: Get APK filename
+      id: apk_info
+      run: |
+        APK_FILE=$(ls ./bin/*.apk 2>/dev/null | head -1)
+        if [ -n "$APK_FILE" ]; then
+          echo "apk_path=$APK_FILE" >> $GITHUB_OUTPUT
+          APK_NAME=$(basename "$APK_FILE")
+          echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
+          echo "### ✅ APK Built Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "📱 File: \`$APK_NAME\`" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Download from the Artifacts section below" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ❌ APK Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "Check the build logs for errors" >> $GITHUB_STEP_SUMMARY
+        fi

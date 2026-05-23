@@ -1,0 +1,22 @@
+# Build artifacts
+bin/
+.buildozer/
+__pycache__/
+*.pyc
+*.pyo
+*.apk
+*.aab
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env (keep template)
+.env.local
