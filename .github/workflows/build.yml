@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 180  # 3 hours for dual-arch build
     
     steps:
     - name: Checkout code
@@ -39,15 +40,21 @@ jobs:
         python3 -m pip install --upgrade pip setuptools
         python3 -m pip install buildozer==1.5.0 cython==0.29.37 virtualenv
     
-    - name: Build APK with Buildozer
+    - name: Build APK with Buildozer (debug, dual arch)
       run: |
         export JAVA_HOME="${{ steps.setup-java.outputs.path }}"
         export PATH="$JAVA_HOME/bin:$PATH"
         echo "JAVA_HOME=$JAVA_HOME"
         javac -version
+        # Build debug APK (supports both armeabi-v7a and arm64-v8a)
         buildozer android debug
       env:
         JAVA_HOME: ${{ steps.setup-java.outputs.path }}
+    
+    - name: List built APKs
+      run: |
+        echo "Built APKs:"
+        ls -lh ./bin/*.apk 2>/dev/null || echo "No APKs found"
     
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
@@ -66,6 +73,13 @@ jobs:
           echo "### ✅ APK Built Successfully!" >> $GITHUB_STEP_SUMMARY
           echo "📱 File: \`$APK_NAME\` ($APK_SIZE)" >> $GITHUB_STEP_SUMMARY
           echo "📦 Download from the Artifacts section below" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📋 **Supported architectures:** armeabi-v7a (32-bit) + arm64-v8a (64-bit)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔧 **Installation troubleshooting:**" >> $GITHUB_STEP_SUMMARY
+          echo "- If 'App not installed', go to Settings → Security → Enable 'Install from unknown sources'" >> $GITHUB_STEP_SUMMARY
+          echo "- On Android 8+, allow your browser/file manager to install apps" >> $GITHUB_STEP_SUMMARY
+          echo "- Uninstall any previous version first, then reinstall" >> $GITHUB_STEP_SUMMARY
         else
           echo "### ❌ APK Build Failed" >> $GITHUB_STEP_SUMMARY
           echo "Check the build logs for errors" >> $GITHUB_STEP_SUMMARY

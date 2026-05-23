@@ -1,17 +1,19 @@
 """
-Kimi K2.6 UDE - Main Entry Point
-==================================
-This file is required by python-for-android as the default entry point.
-It delegates to main_android.py which contains the actual app startup logic.
+Kimi K2.6 UDE - Main Entry Point (p4a compatible)
+====================================================
+This is the primary entry point for the Android APK.
+python-for-android (p4a) requires a main.py that starts the Kivy app.
 """
 
 import os
 import sys
 
 # Ensure the app directory is in the Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+app_dir = os.path.dirname(os.path.abspath(__file__))
+if app_dir not in sys.path:
+    sys.path.insert(0, app_dir)
 
-# Import and run the main app
+# Import and run the main Kivy app
 from app import main
 
 if __name__ == '__main__':
